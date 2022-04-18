@@ -9,6 +9,8 @@ import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
+import sevseg from './sevseg_font.json?url';
+
 // Basic scene, camera, and renderer setup here
 const scene = new THREE.Scene();         //FOV, aspect ratio, view frustrum
 const fov = (window.screen.width < 1000) ? 100 : 75;
@@ -97,7 +99,7 @@ const tline = new THREE.Line( tlinegeometry, tlinematerial );
 scene.add(tline);
 const loader = new FontLoader();
 
-loader.load( './sevseg_font.json', function ( font ) {
+loader.load( sevseg, function ( font ) {
 	const textgeometry = new TextGeometry( 'Aiden Olsen', {
 		font: font,
 		size: 25,
@@ -114,7 +116,7 @@ loader.load( './sevseg_font.json', function ( font ) {
   scene.add(textmesh);
 } );
 
-loader.load( './sevseg_font.json', function ( font ) {
+loader.load( sevseg, function ( font ) {
 	const textgeometry = new TextGeometry( 'Personal Portfolio', {
 		font: font,
 		size: 8,
@@ -131,7 +133,7 @@ loader.load( './sevseg_font.json', function ( font ) {
   scene.add(textmesh);
 } );
 
-loader.load( './sevseg_font.json', function ( font ) {
+loader.load( sevseg, function ( font ) {
 	const textgeometry = new TextGeometry( 'About Me', {
 		font: font,
 		size: 25,
@@ -150,7 +152,7 @@ loader.load( './sevseg_font.json', function ( font ) {
 
 const aboutme = 'I am a third year student attending\nOregon State University working towards\na degree in Electrical and Computer\nEngineering. I enjoy skateboarding, making\nmusic, and being outdoors.'
 
-loader.load( './sevseg_font.json', function ( font ) {
+loader.load( sevseg, function ( font ) {
 	const textgeometry = new TextGeometry( aboutme, {
 		font: font,
 		size: 8,
