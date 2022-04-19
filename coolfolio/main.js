@@ -134,7 +134,7 @@ loader.load( sevseg, function ( font ) {
 } );
 
 loader.load( sevseg, function ( font ) {
-	const textgeometry = new TextGeometry( 'About Me:', {
+	const textgeometry = new TextGeometry( 'About Me', {
 		font: font,
 		size: 25,
 		height: 15,
