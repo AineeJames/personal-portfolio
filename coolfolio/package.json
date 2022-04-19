@@ -11,6 +11,8 @@
     "vite": "^2.9.2"
   },
   "dependencies": {
-    "three": "^0.139.2"
+    "capture-website": "^2.3.0",
+    "three": "^0.139.2",
+    "threex.domevents": "^1.0.1"
   }
 }

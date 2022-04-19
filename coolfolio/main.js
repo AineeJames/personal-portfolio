@@ -1,4 +1,5 @@
 import './style.css';
+import me from './me2.jpg'
 import sevseg from './sevseg_font.json?url';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -10,7 +11,7 @@ import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
 class Planet {
-  constructor(geomtype, size, color, trail) {
+  constructor(geomtype, size, color, trail, wireframe) {
     var g = null;
     if (geomtype == 'icosahedron') {
       g = new THREE.IcosahedronGeometry(size, 0);
@@ -21,7 +22,7 @@ class Planet {
     } else if (geomtype == 'box') {
       g = new THREE.BoxGeometry(size, size, size);
     }
-    const m = new THREE.MeshStandardMaterial({color: color});
+    const m = new THREE.MeshStandardMaterial({color: color, wireframe: wireframe});
     this.mesh = new THREE.Mesh(g, m);
     scene.add(this.mesh);
 
@@ -90,7 +91,7 @@ camera.position.setY(50);
 const composer = new EffectComposer( renderer );
 const renderPass = new RenderPass( scene, camera );
 composer.addPass( renderPass );
-const bloomPass = new UnrealBloomPass(1, 1.3, 0.1,);
+const bloomPass = new UnrealBloomPass(1, 1.3, 0.3,);
 composer.addPass(bloomPass);
 
 const pointLight = new THREE.PointLight(0x6e6e6e);
@@ -103,10 +104,10 @@ const gridHelper = new THREE.GridHelper(200, 50);
 //scene.add(lightHelper, gridHelper);
 
 /*   ---===Planet Definitions===---   */
-const sun = new Planet('icosahedron', 15, 0xF59342, false);
-const earth = new Planet('dodecahedron', 4, 0x3C81C9, true);
-const planetx = new Planet('tetrahedron', 8, 0xAA3139, true);
-const tiny = new Planet('box', 3, 0x6E6E6E, true);
+const sun = new Planet('icosahedron', 15, 0xF59342, false, false);
+const earth = new Planet('dodecahedron', 4, 0x3C81C9, true, false);
+const planetx = new Planet('tetrahedron', 8, 0xAA3139, true, false);
+const tiny = new Planet('box', 3, 0x6E6E6E, true, false);
 
 /*   ---===Text Definitions===---   */
 new Text("aiden olsen", 25, 25, 0x111111, [-75, 35, 0]);
@@ -130,16 +131,12 @@ function addBlip() {
 }
 Array(1000).fill().forEach(addBlip);
 
-/*function convertRange( value, r1, r2 ) { 
-    return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
-}
-function tellPos(p){
-  const lookmvmt = 5;
-  console.log('Position X : ' + p.pageX + ' Position Y : ' + p.pageY);
-  camera.rotation.y = 0.01 * convertRange(p.pageX, [0,1500], [lookmvmt, -lookmvmt]);
-  camera.rotation.x = -0.01 * convertRange(p.pageY, [0,500], [-lookmvmt, lookmvmt]);
-}
-addEventListener('mousemove', tellPos, false);*/
+const texture = new THREE.TextureLoader().load(me);
+const geometry = new THREE.BoxBufferGeometry( 100, 100, 1 );
+const material = new THREE.MeshBasicMaterial( { map: texture } );
+const mesh = new THREE.Mesh(geometry, material);
+mesh.position.set(90, -180, -40);
+scene.add(mesh);
 
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
@@ -147,6 +144,32 @@ function moveCamera() {
 }
 document.body.onscroll = moveCamera;
 moveCamera();
+
+function onWindowResize() {
+  if (window.screen.width > 900) {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+}
+addEventListener('resize', onWindowResize, false);
+
+function onClick() {
+  event.preventDefault();
+  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+  raycaster.setFromCamera(mouse, camera);
+  var intersects = raycaster.intersectObject(scene, true);
+  if (intersects.length > 0) {
+		var object = intersects[0].object;
+    if (object.id == sun.mesh.id) {
+      object.material.color.set( Math.random() * 0xffffff );
+    }
+  }
+}
+var mouse = new THREE.Vector2();
+var raycaster = new THREE.Raycaster();
+addEventListener('click', onClick, false);
 
 function animate() {
   requestAnimationFrame(animate);
@@ -165,6 +188,8 @@ function animate() {
   tiny.updateTrail(35);
 
   camera.position.y += 0.05*Math.cos(tick/100);
+  camera.rotation.y = 0.02*Math.sin(tick/300);
+  camera.rotation.x = 0.02*Math.sin(tick/400);
 
   tick += 1.5;
   composer.render();
