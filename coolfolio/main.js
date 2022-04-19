@@ -143,7 +143,7 @@ addEventListener('mousemove', tellPos, false);*/
 
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
-  camera.position.y = 0.1 * t + 25;
+  camera.position.y = 0.2 * t + 25;
 }
 document.body.onscroll = moveCamera;
 moveCamera();
@@ -163,7 +163,9 @@ function animate() {
   earth.updateTrail(50);
   planetx.updateTrail(70);
   tiny.updateTrail(35);
-  
+
+  camera.position.y += 0.05*Math.cos(tick/100);
+
   tick += 1.5;
   composer.render();
 }
