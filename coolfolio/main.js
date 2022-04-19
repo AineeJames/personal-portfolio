@@ -53,6 +53,26 @@ class Planet {
   }
 }
 
+class Text {
+  constructor(text, fsize, fheight, fcolor, xyz) {
+    const loader = new FontLoader();
+    loader.load(sevseg, function(font) {
+      const textgeo = new TextGeometry(text, {
+        font: font,
+        size: fsize,
+        height: fheight,
+        curveSegments: 12,
+      });
+      const textmesh = new THREE.Mesh(textgeo, [
+        new THREE.MeshPhongMaterial({color: 0xffffff}),
+        new THREE.MeshPhongMaterial({color: fcolor})
+      ])
+      textmesh.position.set(xyz[0], xyz[1], xyz[2]);
+      scene.add(textmesh);
+    });
+  }
+}
+
 // Basic scene, camera, and renderer setup here
 const scene = new THREE.Scene();         //FOV, aspect ratio, view frustrum
 const fov = (window.screen.width < 1000) ? 100 : 75;
@@ -70,15 +90,8 @@ camera.position.setY(50);
 const composer = new EffectComposer( renderer );
 const renderPass = new RenderPass( scene, camera );
 composer.addPass( renderPass );
-
-const bloomPass = new UnrealBloomPass(1, 2, 0,);
+const bloomPass = new UnrealBloomPass(1, 1.3, 0.1,);
 composer.addPass(bloomPass);
-
-/*   ---===Planet Definitions===---   */
-const sun = new Planet('icosahedron', 15, 0xF59342, false);
-const earth = new Planet('dodecahedron', 4, 0x3C81C9, true);
-const planetx = new Planet('tetrahedron', 8, 0xAA3139, true);
-const tiny = new Planet('box', 3, 0x6E6E6E, true);
 
 const pointLight = new THREE.PointLight(0x6e6e6e);
 pointLight.position.set(20,10,5);
@@ -88,6 +101,19 @@ scene.add(pointLight, ambientLight);
 const lightHelper = new THREE.PointLightHelper(pointLight);
 const gridHelper = new THREE.GridHelper(200, 50);
 //scene.add(lightHelper, gridHelper);
+
+/*   ---===Planet Definitions===---   */
+const sun = new Planet('icosahedron', 15, 0xF59342, false);
+const earth = new Planet('dodecahedron', 4, 0x3C81C9, true);
+const planetx = new Planet('tetrahedron', 8, 0xAA3139, true);
+const tiny = new Planet('box', 3, 0x6E6E6E, true);
+
+/*   ---===Text Definitions===---   */
+new Text("aiden olsen", 25, 25, 0x111111, [-75, 35, 0]);
+new Text("personal portfolio", 8, 20, 0x111111, [-42, 20, 0]);
+new Text("about me:", 25, 15, 0x000f55, [-100, -200, 0]);
+const aboutme = 'I am a third year student attending\nOregon State University working towards\na degree in Electrical and Computer\nEngineering. I enjoy skateboarding, making\nmusic, and being outdoors.'
+new Text(aboutme, 8, 10, 0x00f55, [-96, -215, 10])
 
 function addBlip() {
   var randscale = Math.floor(Math.random() * 2) + 1
@@ -103,79 +129,6 @@ function addBlip() {
   scene.add(blip);
 }
 Array(1000).fill().forEach(addBlip);
-
-const loader = new FontLoader();
-
-loader.load( sevseg, function ( font ) {
-	const textgeometry = new TextGeometry( 'Aiden Olsen', {
-		font: font,
-		size: 25,
-		height: 25,
-		curveSegments: 12,
-	} );
-  const textmesh = new THREE.Mesh( textgeometry, [
-    new THREE.MeshPhongMaterial({color: 0x9e9e9e}),
-    new THREE.MeshPhongMaterial({color: 0x141414})
-  ] )
-  textmesh.position.x = -75;
-  textmesh.position.y = 35;
-  textmesh.position.z = 0;
-  scene.add(textmesh);
-} );
-
-loader.load( sevseg, function ( font ) {
-	const textgeometry = new TextGeometry( 'Personal Portfolio', {
-		font: font,
-		size: 8,
-		height: 20,
-		curveSegments: 12,
-	} );
-  const textmesh = new THREE.Mesh( textgeometry, [
-    new THREE.MeshPhongMaterial({color: 0x9e9e9e}),
-    new THREE.MeshPhongMaterial({color: 0x141414})
-  ] )
-  textmesh.position.x = -42
-  textmesh.position.y = 20;
-  textmesh.position.z = 0;
-  scene.add(textmesh);
-} );
-
-loader.load( sevseg, function ( font ) {
-	const textgeometry = new TextGeometry( 'About Me', {
-		font: font,
-		size: 25,
-		height: 15,
-		curveSegments: 12,
-	} );
-  const textmesh = new THREE.Mesh( textgeometry, [
-    new THREE.MeshPhongMaterial({color: 0x9e9e9e}),
-    new THREE.MeshPhongMaterial({color: 0x000e40})
-  ] )
-  textmesh.position.x = -100
-  textmesh.position.y = -200;
-  textmesh.position.z = 0;
-  scene.add(textmesh);
-} );
-
-const aboutme = 'I am a third year student attending\nOregon State University working towards\na degree in Electrical and Computer\nEngineering. I enjoy skateboarding, making\nmusic, and being outdoors.'
-
-loader.load( sevseg, function ( font ) {
-	const textgeometry = new TextGeometry( aboutme, {
-		font: font,
-		size: 8,
-		height: 10,
-		curveSegments: 12,
-	} );
-  const textmesh = new THREE.Mesh( textgeometry, [
-    new THREE.MeshPhongMaterial({color: 0x9e9e9e}),
-    new THREE.MeshPhongMaterial({color: 0x000e40})
-  ] )
-  textmesh.position.x = -96;
-  textmesh.position.y = -215;
-  textmesh.position.z = 10;
-  scene.add(textmesh);
-} );
-
 
 /*function convertRange( value, r1, r2 ) { 
     return ( value - r1[ 0 ] ) * ( r2[ 1 ] - r2[ 0 ] ) / ( r1[ 1 ] - r1[ 0 ] ) + r2[ 0 ];
@@ -198,13 +151,13 @@ moveCamera();
 function animate() {
   requestAnimationFrame(animate);
   
-  sun.rotate(0.01, -0.0025, -0.007);
+  sun.rotate(0.001, -0.00025, -0.0007);
   earth.rotate(-0.001, 0.0035, -0.002);
   planetx.rotate(0.003, -0.01, -0.002);
   tiny.rotate(-0.002, -0.001, -0.03);
 
   earth.orbit(50, 'sin', 'cos', 'sin', tick, 100);
-  planetx.orbit(100, 'sin', 'sin', 'cos', tick, 200);
+  planetx.orbit(70, 'sin', 'sin', 'cos', tick, 150);
   tiny.orbit(25, 'cos', 'sin', 'sin', tick, 75);
   
   earth.updateTrail(50);
