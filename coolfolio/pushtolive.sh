@@ -15,6 +15,6 @@ git push
 git checkout live
 git merge dev
 git push
-git chekout dev
+git checkout dev
 echo "sucess!"
 
