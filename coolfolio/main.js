@@ -1,6 +1,7 @@
 import './style.css';
 import me from './me2.jpg'
 import sevseg from './sevseg_font.json?url';
+import about from './about.svg';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
@@ -9,6 +10,7 @@ import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPa
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
+import { SVGLoader } from 'three/examples/jsm/loaders/SVGLoader.js';
 
 class Planet {
   constructor(geomtype, size, color, trail, wireframe) {
@@ -74,6 +76,38 @@ class Text {
   }
 }
 
+class Icon {
+  constructor(svg, scale, xyz) {
+    const loader = new SVGLoader();
+    loader.load(
+      svg,
+      function ( data ) {
+        const paths = data.paths;
+        const group = new THREE.Group();
+        for ( let i = 0; i < paths.length; i ++ ) {
+          const path = paths[ i ];
+          const material = new THREE.MeshBasicMaterial( {
+            color: 0x6e6e6e,
+            side: THREE.DoubleSide,
+            depthWrite: false
+          } );
+          const shapes = SVGLoader.createShapes( path );
+          for ( let j = 0; j < shapes.length; j ++ ) {
+            const shape = shapes[ j ];
+            const geometry = new THREE.ShapeGeometry( shape );
+            const mesh = new THREE.Mesh( geometry, material );
+            mesh.scale.set(scale, scale, scale);
+            mesh.rotation.z = 180 * (Math.PI/180);
+            mesh.position.set(xyz[0], xyz[1], xyz[2]);
+            group.add( mesh );
+          }
+        }
+        scene.add( group );
+      },
+    );
+  }
+}
+
 // Basic scene, camera, and renderer setup here
 const scene = new THREE.Scene();         //FOV, aspect ratio, view frustrum
 const fov = (window.screen.width < 1000) ? 100 : 75;
@@ -85,7 +119,7 @@ const renderer = new THREE.WebGLRenderer({
 // Initial camera setup and renderer settings
 renderer.setPixelRatio(window.devicePixelRation);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(175);
+camera.position.setZ(300);
 camera.position.setY(50);
 
 const composer = new EffectComposer( renderer );
@@ -115,6 +149,9 @@ new Text("personal portfolio", 8, 20, 0x111111, [-42, 20, 0]);
 new Text("about me:", 25, 15, 0x000f55, [-100, -200, 0]);
 const aboutme = 'I am a third year student attending\nOregon State University working towards\na degree in Electrical and Computer\nEngineering. I enjoy skateboarding, making\nmusic, and being outdoors.'
 new Text(aboutme, 8, 10, 0x00f55, [-96, -215, 10])
+
+/*   ---===Icon Definitions===---   */
+const abouticon = new Icon(about, 0.05, [-75, -145, 0]);
 
 function addBlip() {
   var randscale = Math.floor(Math.random() * 2) + 1
