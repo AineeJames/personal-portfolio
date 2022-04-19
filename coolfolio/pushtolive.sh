@@ -1,7 +1,7 @@
 !/bin/bash
 # A script to merge dev branch with live
 
-if [ -z "$1"]
+if [ -z $1]
 then
   echo "please give a commit message ex: ./pushtolive <message>"
   exit 0
