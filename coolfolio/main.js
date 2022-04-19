@@ -1,6 +1,7 @@
 import './style.css';
 import me from './me2.jpg'
 import sevseg from './sevseg_font.json?url';
+import code from './codefont.json?url';
 import about from './about.svg';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -57,9 +58,9 @@ class Planet {
 }
 
 class Text {
-  constructor(text, fsize, fheight, fcolor, xyz) {
+  constructor(text, fsize, fheight, fcolor, xyz, font) {
     const loader = new FontLoader();
-    loader.load(sevseg, function(font) {
+    loader.load(font, function(font) {
       const textgeo = new TextGeometry(text, {
         font: font,
         size: fsize,
@@ -144,11 +145,12 @@ const planetx = new Planet('tetrahedron', 8, 0xAA3139, true, false);
 const tiny = new Planet('box', 3, 0x6E6E6E, true, false);
 
 /*   ---===Text Definitions===---   */
-new Text("aiden olsen", 25, 25, 0x111111, [-75, 35, 0]);
-new Text("personal portfolio", 8, 20, 0x111111, [-42, 20, 0]);
-new Text("about me:", 25, 15, 0x000f55, [-100, -200, 0]);
-const aboutme = 'I am a third year student attending\nOregon State University working towards\na degree in Electrical and Computer\nEngineering. I enjoy skateboarding, making\nmusic, and being outdoors.'
-new Text(aboutme, 8, 10, 0x00f55, [-96, -215, 10])
+new Text("aiden olsen", 25, 25, 0x111111, [-75, 35, 0], sevseg);
+new Text("* personal portfolio *", 7, 20, 0x111111, [-62, 20, 0], code);
+new Text("about me:", 25, 15, 0x000f55, [-100, -200, 0], sevseg);
+const aboutme = 'I am a third year student\nattending Oregon State University\nworking towards a degree in\nElectrical and Computer Engineering.\nI enjoy skateboarding, making\nmusic, and being outdoors.'
+
+new Text(aboutme, 7, 10, 0x00f55, [-96, -215, 10], code);
 
 /*   ---===Icon Definitions===---   */
 const abouticon = new Icon(about, 0.05, [-75, -145, 0]);
