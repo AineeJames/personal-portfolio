@@ -119,7 +119,7 @@ const renderer = new THREE.WebGLRenderer({
 // Initial camera setup and renderer settings
 renderer.setPixelRatio(window.devicePixelRation);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(300);
+camera.position.setZ(175);
 camera.position.setY(50);
 
 const composer = new EffectComposer( renderer );
