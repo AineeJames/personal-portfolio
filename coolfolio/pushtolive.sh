@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 # A script to merge dev branch with live
 
 if [ -z $1]
