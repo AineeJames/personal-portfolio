@@ -1,8 +1,11 @@
 import './style.css';
 import me from './me2.jpg'
+import pcb from './latticepcb.jpg';
+import lattice from './lattice.jpg';
 import sevseg from './sevseg_font.json?url';
 import code from './codefont.json?url';
 import about from './about.svg';
+import gear from './gears-solid.svg';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
@@ -88,7 +91,7 @@ class Icon {
         for ( let i = 0; i < paths.length; i ++ ) {
           const path = paths[ i ];
           const material = new THREE.MeshBasicMaterial( {
-            color: 0x6e6e6e,
+            color: 0xffffff,
             side: THREE.DoubleSide,
             depthWrite: false
           } );
@@ -109,6 +112,17 @@ class Icon {
   }
 }
 
+class Image {
+  constructor(img, xyz, w, h) {
+    const texture = new THREE.TextureLoader().load(img);
+    const geometry = new THREE.BoxBufferGeometry( w, h, 1 );
+    const material = new THREE.MeshBasicMaterial( { map: texture } );
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.set(xyz[0], xyz[1], xyz[2]);
+    scene.add(mesh);
+  }
+}
+
 // Basic scene, camera, and renderer setup here
 const scene = new THREE.Scene();         //FOV, aspect ratio, view frustrum
 const fov = (window.screen.width < 1000) ? 100 : 75;
@@ -120,18 +134,28 @@ const renderer = new THREE.WebGLRenderer({
 // Initial camera setup and renderer settings
 renderer.setPixelRatio(window.devicePixelRation);
 renderer.setSize(window.innerWidth, window.innerHeight);
-camera.position.setZ(175);
+camera.position.setZ(180);
 camera.position.setY(50);
 
 const composer = new EffectComposer( renderer );
 const renderPass = new RenderPass( scene, camera );
 composer.addPass( renderPass );
-const bloomPass = new UnrealBloomPass(1, 1.3, 0.3,);
+const params = {
+  exposure: 1,
+  bloomStrength: 0.6,
+  bloomThreshold: 0,
+  bloomRadius: 1
+};
+const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
+				bloomPass.threshold = params.bloomThreshold;
+				bloomPass.strength = params.bloomStrength;
+				bloomPass.radius = params.bloomRadius;
+//const bloomPass = new UnrealBloomPass(1, 1.3, 0.3,);
 composer.addPass(bloomPass);
 
-const pointLight = new THREE.PointLight(0x6e6e6e);
+const pointLight = new THREE.PointLight(0xffffff);
 pointLight.position.set(20,10,5);
-const ambientLight = new THREE.AmbientLight(0x6e6e6e);
+const ambientLight = new THREE.AmbientLight(0xffffff);
 scene.add(pointLight, ambientLight);
 
 const lightHelper = new THREE.PointLightHelper(pointLight);
@@ -144,16 +168,25 @@ const earth = new Planet('dodecahedron', 4, 0x3C81C9, true, false);
 const planetx = new Planet('tetrahedron', 8, 0xAA3139, true, false);
 const tiny = new Planet('box', 3, 0x6E6E6E, true, false);
 
+/*   ---===Icon Definitions===---   */
+const abouticon = new Icon(about, 0.05, [-75, -145, 0]);
+const gearicon = new Icon(gear, 0.05, [-75, -355, 0]);
+
 /*   ---===Text Definitions===---   */
 new Text("aiden olsen", 25, 25, 0x111111, [-75, 35, 0], sevseg);
 new Text("* personal portfolio *", 7, 20, 0x111111, [-62, 20, 0], code);
 new Text("about me:", 25, 15, 0x000f55, [-100, -200, 0], sevseg);
 const aboutme = 'I am a third year student\nattending Oregon State University\nworking towards a degree in\nElectrical and Computer Engineering.\nI enjoy skateboarding, making\nmusic, and being outdoors.'
-
 new Text(aboutme, 7, 10, 0x00f55, [-96, -215, 10], code);
+new Text("projects:", 25, 15, 0x211344, [-100, -410, 0], sevseg);
+new Text("lattice cube", 15, 10, 0x211344, [-102, -430, 0], sevseg);
+const latticedesc = '> Individually addressable 5x5x7\nLED cube utilizing layer multiplexing\nwith intuitive user interfacean\nand audio reactive visualization.';
+new Text(latticedesc, 7, 10, 0x211344, [-104, -442, 0], code);
 
-/*   ---===Icon Definitions===---   */
-const abouticon = new Icon(about, 0.05, [-75, -145, 0]);
+/*   ---===Image Definitions===---   */
+new Image(me, [90,-180,-40], 100, 100);
+new Image(pcb, [-15,-540, 0], 200, 100);
+new Image(lattice, [90, -400, -40], 100, 100);
 
 function addBlip() {
   var randscale = Math.floor(Math.random() * 2) + 1
@@ -169,13 +202,6 @@ function addBlip() {
   scene.add(blip);
 }
 Array(1000).fill().forEach(addBlip);
-
-const texture = new THREE.TextureLoader().load(me);
-const geometry = new THREE.BoxBufferGeometry( 100, 100, 1 );
-const material = new THREE.MeshBasicMaterial( { map: texture } );
-const mesh = new THREE.Mesh(geometry, material);
-mesh.position.set(90, -180, -40);
-scene.add(mesh);
 
 function moveCamera() {
   const t = document.body.getBoundingClientRect().top;
