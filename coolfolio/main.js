@@ -60,8 +60,9 @@ class Planet {
   }
 }
 
+const textids = {};
 class Text {
-  constructor(text, fsize, fheight, fcolor, xyz, font) {
+  constructor(text, fsize, fheight, fcolor, xyz, font, uidstr = "") {
     const loader = new FontLoader();
     loader.load(font, function(font) {
       const textgeo = new TextGeometry(text, {
@@ -76,6 +77,10 @@ class Text {
       ])
       textmesh.position.set(xyz[0], xyz[1], xyz[2]);
       scene.add(textmesh);
+      if (uidstr != ""){
+        //textids.push(textmesh.id);
+        textids[uidstr] = textmesh.id;
+      }
     });
   }
 }
@@ -106,7 +111,7 @@ class Icon {
             group.add( mesh );
           }
         }
-        scene.add( group );
+        scene.add(group);
       },
     );
   }
@@ -179,9 +184,9 @@ new Text("about me:", 25, 15, 0x000f55, [-100, -200, 0], sevseg);
 const aboutme = 'I am a third year student\nattending Oregon State University\nworking towards a degree in\nElectrical and Computer Engineering.\nI enjoy skateboarding, making\nmusic, and being outdoors.'
 new Text(aboutme, 7, 10, 0x00f55, [-96, -215, 10], code);
 new Text("projects:", 25, 15, 0x211344, [-100, -410, 0], sevseg);
-new Text("lattice cube", 15, 10, 0x211344, [-102, -430, 0], sevseg);
+new Text("lattice cube", 15, 10, 0x211344, [-102, -430, 0], sevseg, "latticelink");
 const latticedesc = '> Individually addressable 5x5x7\nLED cube utilizing layer multiplexing\nwith intuitive user interfacean\nand audio reactive visualization.';
-new Text(latticedesc, 7, 10, 0x211344, [-104, -442, 0], code);
+new Text(latticedesc, 7, 10, 0x211344, [-104, -442, 0], code, "latticedesc");
 
 /*   ---===Image Definitions===---   */
 new Image(me, [90,-180,-40], 100, 100);
@@ -229,6 +234,9 @@ function onClick() {
 		var object = intersects[0].object;
     if (object.id == sun.mesh.id) {
       object.material.color.set( Math.random() * 0xffffff );
+    }
+    if (object.id == textids.latticelink) {
+      window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
     }
   }
 }
