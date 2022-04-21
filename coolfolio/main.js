@@ -6,6 +6,7 @@ import sevseg from './sevseg_font.json?url';
 import code from './codefont.json?url';
 import about from './about.svg';
 import gear from './gears-solid.svg';
+import link from './link.svg';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
@@ -85,14 +86,16 @@ class Text {
   }
 }
 
+const iconids = {};
 class Icon {
-  constructor(svg, scale, xyz) {
+  constructor(svg, scale, xyz, uidstr = "") {
     const loader = new SVGLoader();
     loader.load(
       svg,
       function ( data ) {
         const paths = data.paths;
         const group = new THREE.Group();
+        const groupids = [];
         for ( let i = 0; i < paths.length; i ++ ) {
           const path = paths[ i ];
           const material = new THREE.MeshBasicMaterial( {
@@ -108,10 +111,17 @@ class Icon {
             mesh.scale.set(scale, scale, scale);
             mesh.rotation.z = 180 * (Math.PI/180);
             mesh.position.set(xyz[0], xyz[1], xyz[2]);
+            if (uidstr != "") {
+              groupids.push(mesh.id);
+            }
             group.add( mesh );
           }
         }
         scene.add(group);
+        if (uidstr != "") {
+          iconids[uidstr] = groupids;
+          console.log(iconids);
+        }
       },
     );
   }
@@ -176,6 +186,7 @@ const tiny = new Planet('box', 3, 0x6E6E6E, true, false);
 /*   ---===Icon Definitions===---   */
 const abouticon = new Icon(about, 0.05, [-75, -145, 0]);
 const gearicon = new Icon(gear, 0.05, [-75, -355, 0]);
+const latticelink = new Icon(link, 0.04, [22, -413, 0], "latticeiconlink");
 
 /*   ---===Text Definitions===---   */
 new Text("aiden olsen", 25, 25, 0x111111, [-75, 35, 0], sevseg);
@@ -186,7 +197,7 @@ new Text(aboutme, 7, 10, 0x00f55, [-96, -215, 10], code);
 new Text("projects:", 25, 15, 0x211344, [-100, -410, 0], sevseg);
 new Text("lattice cube", 15, 10, 0x211344, [-102, -430, 0], sevseg, "latticelink");
 const latticedesc = '> Individually addressable 5x5x7\nLED cube utilizing layer multiplexing\nwith intuitive user interfacean\nand audio reactive visualization.';
-new Text(latticedesc, 7, 10, 0x211344, [-104, -442, 0], code, "latticedesc");
+new Text(latticedesc, 7, 10, 0x211344, [-104, -442, 0], code);
 
 /*   ---===Image Definitions===---   */
 new Image(me, [90,-180,-40], 100, 100);
@@ -233,12 +244,28 @@ function clicktapHandler(x, y) {
   var intersects = raycaster.intersectObject(scene, true);
   if (intersects.length > 0) {
 		var object = intersects[0].object;
+    console.log("clicked: ", object.id);
+    console.log("goal: ", iconids.latticeiconlink);
     if (object.id == sun.mesh.id) {
       object.material.color.set( Math.random() * 0xffffff );
     }
-    if (object.id == textids.latticelink) {
+    if (object.id == textids.latticelink || object.id == iconids.latticeiconlink) {
       window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
     }
+    /*for (var currid in iconids.latticeiconlink) {
+      console.log("testing _ vs _", currid, iconids.latticeiconlink);
+      if (object.id == currid) {
+        window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
+        break;
+      }
+    }*/
+    iconids.latticeiconlink.forEach((x, i) => testTap(x, object));
+  }
+}
+function testTap(x, object) {
+  console.log(x);
+  if (object.id == x) {
+    window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
   }
 }
 
