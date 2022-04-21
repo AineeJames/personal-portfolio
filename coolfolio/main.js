@@ -224,11 +224,12 @@ function onWindowResize() {
 }
 addEventListener('resize', onWindowResize, false);
 
-function onClick() {
-  event.preventDefault();
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
+var raycaster = new THREE.Raycaster();
+function clicktapHandler(x, y) {
+  var coords = new THREE.Vector2();
+  coords.x = x;
+  coords.y = y;
+  raycaster.setFromCamera(coords, camera);
   var intersects = raycaster.intersectObject(scene, true);
   if (intersects.length > 0) {
 		var object = intersects[0].object;
@@ -240,9 +241,20 @@ function onClick() {
     }
   }
 }
-var mouse = new THREE.Vector2();
-var raycaster = new THREE.Raycaster();
+
+function onClick() {
+  event.preventDefault();
+  var x = (event.clientX / window.innerWidth) * 2 - 1;
+  var y = -(event.clientY / window.innerHeight) * 2 + 1;
+  clicktapHandler(x, y);
+}
 addEventListener('click', onClick, false);
+
+document.addEventListener("touchstart", e => {
+  var x = (e.touches[0].clientX / window.innerWidth) * 2 - 1;
+  var y = -(e.touches[0].clientY / window.innerHeight) * 2 + 1;
+  clicktapHandler(x, y);
+});
 
 function animate() {
   requestAnimationFrame(animate);
