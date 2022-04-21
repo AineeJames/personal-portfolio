@@ -186,7 +186,7 @@ const tiny = new Planet('box', 3, 0x6E6E6E, true, false);
 /*   ---===Icon Definitions===---   */
 const abouticon = new Icon(about, 0.05, [-75, -145, 0]);
 const gearicon = new Icon(gear, 0.05, [-75, -355, 0]);
-const latticelink = new Icon(link, 0.04, [22, -413, 0], "latticeiconlink");
+const latticelink = new Icon(link, 0.06, [30, -408, 0], "latticeiconlink");
 
 /*   ---===Text Definitions===---   */
 new Text("aiden olsen", 25, 25, 0x111111, [-75, 35, 0], sevseg);

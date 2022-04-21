@@ -1,15 +1,13 @@
 #!/bin/bash
 # A script to merge dev branch with live
 
-if [[ $1 -eq 0 ]] ; then
-  echo "please give a commit message ex: ./pushtolive <message>"
-  exit 0
-fi
+printf "Please give a commit message: "
+read msg
 
 echo "beginning process..."
 git branch dev
 git add -A
-git commit -m "$1"
+git commit -m "{$msg}"
 git push
 git checkout live
 git merge dev
