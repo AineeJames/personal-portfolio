@@ -7,7 +7,7 @@ read msg
 echo "beginning process..."
 git branch dev
 git add -A
-git commit -m "{$msg}"
+git commit -m "$msg"
 git push
 git checkout live
 git merge dev

@@ -1,12 +1,14 @@
 import './style.css';
 import me from './me2.jpg'
 import pcb from './latticepcb.jpg';
-import lattice from './lattice.jpg';
+import snupload from './snupload.png';
+import snhome from './snhome.png';
 import sevseg from './sevseg_font.json?url';
 import code from './codefont.json?url';
 import about from './about.svg';
 import gear from './gears-solid.svg';
 import link from './link.svg';
+import contact from './contact.svg';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
@@ -187,6 +189,9 @@ const tiny = new Planet('box', 3, 0x6E6E6E, true, false);
 const abouticon = new Icon(about, 0.05, [-75, -145, 0]);
 const gearicon = new Icon(gear, 0.05, [-75, -355, 0]);
 const latticelink = new Icon(link, 0.06, [30, -408, 0], "latticeiconlink");
+const snlink = new Icon(link, 0.06, [50, -587, 0], "sniconlink");
+const contacticon = new Icon(contact, 0.2, [-75, -843, 0]);
+
 
 /*   ---===Text Definitions===---   */
 new Text("aiden olsen", 25, 25, 0x111111, [-75, 35, 0], sevseg);
@@ -198,11 +203,18 @@ new Text("projects:", 25, 15, 0x211344, [-100, -410, 0], sevseg);
 new Text("lattice cube", 15, 10, 0x211344, [-102, -430, 0], sevseg, "latticelink");
 const latticedesc = '> Individually addressable 5x5x7\nLED cube utilizing layer multiplexing\nwith intuitive user interfacean\nand audio reactive visualization.';
 new Text(latticedesc, 7, 10, 0x211344, [-104, -442, 0], code);
+new Text("swiftnotes.net", 15, 10, 0x211344, [-102, -610, 0], sevseg, "snlink");
+const sndesc = '> An automatic notesheet utility\ncreated with flask and opencv in\npython. Swiftnotes will consolidate\na pdf with boxed notes and pack\nthem on a page of paper or notecard\nallowing for better notesheets!';
+new Text(sndesc, 7, 10, 0x211344, [-104, -622, 0], code);
+new Text("contact:", 25, 15, 0x594214, [-100, -890, 0], sevseg);
+const contactinfo = '> Email:\n  - olsenaiden33@gmail.com\n> Instagram:\n  - @aiden.olsen.official';
+new Text(contactinfo, 7, 1, 0x594214, [-104, -905, 0], code);
 
 /*   ---===Image Definitions===---   */
 new Image(me, [90,-180,-40], 100, 100);
 new Image(pcb, [-15,-540, 0], 200, 100);
-new Image(lattice, [90, -400, -40], 100, 100);
+new Image(snhome, [-60, -735, 0], 100, 60);
+new Image(snupload, [50, -735, 0], 100, 60)
 
 function addBlip() {
   var randscale = Math.floor(Math.random() * 2) + 1
@@ -252,20 +264,22 @@ function clicktapHandler(x, y) {
     if (object.id == textids.latticelink || object.id == iconids.latticeiconlink) {
       window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
     }
-    /*for (var currid in iconids.latticeiconlink) {
-      console.log("testing _ vs _", currid, iconids.latticeiconlink);
-      if (object.id == currid) {
-        window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
-        break;
-      }
-    }*/
-    iconids.latticeiconlink.forEach((x, i) => testTap(x, object));
+    iconids.latticeiconlink.forEach((x, i) => testTap(x, object, "lattice"));
+    if (object.id == textids.snlink || object.id == iconids.sniconlink) {
+      window.open('https://www.swiftnotes.net');
+    }
+    iconids.sniconlink.forEach((x, i) => testTap(x, object, "swiftnotes"));
   }
 }
-function testTap(x, object) {
+function testTap(x, object, link) {
   console.log(x);
   if (object.id == x) {
-    window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
+    if (link == "lattice") {
+      window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
+    }
+    if (link == "swiftnotes") {
+      window.open('https://www.swiftnotes.net');
+    }
   }
 }
 
