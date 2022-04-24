@@ -122,7 +122,6 @@ class Icon {
         scene.add(group);
         if (uidstr != "") {
           iconids[uidstr] = groupids;
-          console.log(iconids);
         }
       },
     );
@@ -256,8 +255,6 @@ function clicktapHandler(x, y) {
   var intersects = raycaster.intersectObject(scene, true);
   if (intersects.length > 0) {
 		var object = intersects[0].object;
-    console.log("clicked: ", object.id);
-    console.log("goal: ", iconids.latticeiconlink);
     if (object.id == sun.mesh.id) {
       object.material.color.set( Math.random() * 0xffffff );
     }
@@ -272,7 +269,6 @@ function clicktapHandler(x, y) {
   }
 }
 function testTap(x, object, link) {
-  console.log(x);
   if (object.id == x) {
     if (link == "lattice") {
       window.open('https://eecs.oregonstate.edu/project-showcase/projects/?id=qIqU5BGjmgrNyZlU');
